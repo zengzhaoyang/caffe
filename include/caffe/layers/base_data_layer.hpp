@@ -39,6 +39,10 @@ class BaseDataLayer : public Layer<Dtype> {
   virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
       const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom) {}
 
+  //add by zhaoyang
+  virtual void setImgPath(char* path, int label){}
+  virtual void fetchImage(){}
+
  protected:
   TransformationParameter transform_param_;
   shared_ptr<DataTransformer<Dtype> > data_transformer_;
@@ -68,7 +72,15 @@ class BasePrefetchingDataLayer :
       const vector<Blob<Dtype>*>& top);
 
   // Prefetches batches (asynchronously if to GPU memory)
-  static const int PREFETCH_COUNT = 3;
+  //change by zhaoyang
+  static const int PREFETCH_COUNT = 1;
+
+  //add by zhaoyang
+  virtual void setImgPath(char* path, int label){}
+  virtual void fetchImage() {
+    Batch<Dtype> *batch = prefetch_full_.pop();
+    prefetch_free_.push(batch);
+  }
 
  protected:
   virtual void InternalThreadEntry();

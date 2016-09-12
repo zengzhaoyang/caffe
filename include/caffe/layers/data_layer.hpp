@@ -27,6 +27,9 @@ class DataLayer : public BasePrefetchingDataLayer<Dtype> {
   virtual inline int ExactNumBottomBlobs() const { return 0; }
   virtual inline int MinTopBlobs() const { return 1; }
   virtual inline int MaxTopBlobs() const { return 2; }
+  //add by zhaoyang
+  virtual void setImgPath(char* path, int label){}
+  
 
  protected:
   virtual void load_batch(Batch<Dtype>* batch);

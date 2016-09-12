@@ -816,6 +816,11 @@ message InnerProductParameter {
   // of the weight matrix. The weight matrix itself is not going to be transposed
   // but rather the transfer flag of operations will be toggled accordingly.
   optional bool transpose = 6 [default = false];
+
+  //add by zhaoyang 4.18
+  optional bool has_backward_filter = 7 [default = false];
+  optional string backward_filter_path = 8 [default = ""];
+  //----
 }
 
 message InputParameter {

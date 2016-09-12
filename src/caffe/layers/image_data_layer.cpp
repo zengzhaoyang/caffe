@@ -162,6 +162,12 @@ void ImageDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
   DLOG(INFO) << "Transform time: " << trans_time / 1000 << " ms.";
 }
 
+template<typename Dtype>
+void ImageDataLayer<Dtype>::setImgPath(char *path, int label) {
+  lines_.clear();
+  lines_.push_back(std::make_pair(string(path), label));
+}
+
 INSTANTIATE_CLASS(ImageDataLayer);
 REGISTER_LAYER_CLASS(ImageData);
 

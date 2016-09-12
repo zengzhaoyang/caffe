@@ -283,6 +283,8 @@ BOOST_PYTHON_MODULE(_caffe) {
           bp::return_internal_reference<>()))
     .def("setup", &Layer<Dtype>::LayerSetUp)
     .def("reshape", &Layer<Dtype>::Reshape)
+    .def("setImgPath", &Layer<Dtype>::setImgPath)
+    .def("fetchImage", &Layer<Dtype>::fetchImage)
     .add_property("type", bp::make_function(&Layer<Dtype>::type));
   bp::register_ptr_to_python<shared_ptr<Layer<Dtype> > >();
 

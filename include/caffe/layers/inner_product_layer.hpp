@@ -45,6 +45,11 @@ class InnerProductLayer : public Layer<Dtype> {
   bool bias_term_;
   Blob<Dtype> bias_multiplier_;
   bool transpose_;  ///< if true, assume transposed weights
+
+  //add by zhaoyang 4.18
+  bool has_backward_filter;
+  vector<bool> filter;
+  //----
 };
 
 }  // namespace caffe

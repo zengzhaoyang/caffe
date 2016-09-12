@@ -20,6 +20,25 @@ void caffe_cpu_gemm<float>(const CBLAS_TRANSPOSE TransA,
       ldb, beta, C, N);
 }
 
+//add by zhaoyang 4.18
+template<>
+void caffe_cpu_gemm<float>(const CBLAS_TRANSPOSE TransA,
+    const CBLAS_TRANSPOSE TransB, const int M, const int N, const int K,
+    const float alpha, const float* A, const float* B, const float beta,
+    float* C, bool extra, vector<bool> *filter) {
+  int lda = (TransA == CblasNoTrans) ? K : M;
+  int ldb = (TransB == CblasNoTrans) ? N : K;
+  cblas_sgemm(CblasRowMajor, TransA, TransB, M, N, K, alpha, A, lda, B,
+      ldb, beta, C, N);
+
+  if (extra) {
+    for (long long i = 0; i < (long long)N * M; i++) {
+      C[i] = C[i] * ((int)(*filter)[i]);
+    }
+  }
+}
+//----
+
 template<>
 void caffe_cpu_gemm<double>(const CBLAS_TRANSPOSE TransA,
     const CBLAS_TRANSPOSE TransB, const int M, const int N, const int K,
@@ -31,12 +50,48 @@ void caffe_cpu_gemm<double>(const CBLAS_TRANSPOSE TransA,
       ldb, beta, C, N);
 }
 
+
+//add by zhaoyang 4.18
+template<>
+void caffe_cpu_gemm<double>(const CBLAS_TRANSPOSE TransA,
+    const CBLAS_TRANSPOSE TransB, const int M, const int N, const int K,
+    const double alpha, const double* A, const double* B, const double beta,
+    double* C, bool extra, vector<bool> *filter) {
+  int lda = (TransA == CblasNoTrans) ? K : M;
+  int ldb = (TransB == CblasNoTrans) ? N : K;
+  cblas_dgemm(CblasRowMajor, TransA, TransB, M, N, K, alpha, A, lda, B,
+      ldb, beta, C, N);
+
+  if (extra) {
+    for (long long i = 0; i < (long long)N * M; i++) {
+      C[i] = C[i] * ((int)(*filter)[i]);
+    }
+  }
+}
+//----
+
 template <>
 void caffe_cpu_gemv<float>(const CBLAS_TRANSPOSE TransA, const int M,
     const int N, const float alpha, const float* A, const float* x,
     const float beta, float* y) {
   cblas_sgemv(CblasRowMajor, TransA, M, N, alpha, A, N, x, 1, beta, y, 1);
+
 }
+
+//add by zhaoyang 4.18
+template <>
+void caffe_cpu_gemv<float>(const CBLAS_TRANSPOSE TransA, const int M,
+    const int N, const float alpha, const float* A, const float* x,
+    const float beta, float* y, bool extra, vector<bool> *filter) {
+  cblas_sgemv(CblasRowMajor, TransA, M, N, alpha, A, N, x, 1, beta, y, 1);
+
+  if (extra) {
+    for (long long i = 0; i < (long long )N * M; i++) {
+      y[i] = y[i] * ((int)(*filter)[i]);
+    }
+  }
+}
+//----
 
 template <>
 void caffe_cpu_gemv<double>(const CBLAS_TRANSPOSE TransA, const int M,
@@ -44,6 +99,21 @@ void caffe_cpu_gemv<double>(const CBLAS_TRANSPOSE TransA, const int M,
     const double beta, double* y) {
   cblas_dgemv(CblasRowMajor, TransA, M, N, alpha, A, N, x, 1, beta, y, 1);
 }
+
+//change by zhaoyang 4.18
+template <>
+void caffe_cpu_gemv<double>(const CBLAS_TRANSPOSE TransA, const int M,
+    const int N, const double alpha, const double* A, const double* x,
+    const double beta, double* y, bool extra, vector<bool> *filter) {
+  cblas_dgemv(CblasRowMajor, TransA, M, N, alpha, A, N, x, 1, beta, y, 1);
+
+  if (extra) {
+    for (long long i = 0; i < (long long )N * M; i++) {
+      y[i] = y[i] * ((int)(*filter)[i]);
+    }
+  }
+}
+//----
 
 template <>
 void caffe_axpy<float>(const int N, const float alpha, const float* X,

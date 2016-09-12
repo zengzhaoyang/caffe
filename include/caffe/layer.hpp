@@ -37,6 +37,11 @@ class Layer {
    * to SetUp(), where the dimensions of the bottom blobs are provided to the
    * layer.
    */
+
+  //add by zhaoyang
+  virtual void setImgPath(char* path, int label){}
+  virtual void fetchImage(){}
+
   explicit Layer(const LayerParameter& param)
     : layer_param_(param), is_shared_(false) {
       // Set phase and copy blobs (if there are any).
